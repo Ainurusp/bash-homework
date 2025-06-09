@@ -16,25 +16,33 @@ function k-pop() {
 k-pop
 
 function wordpress() {
-	sudo yum update
-  	sudo apt install -y apache2 php libapache2-mod-php php-mysql wget unzip
- 	wget -c https://wordpress.org/latest.zip
-  	unzip latest.zip
+	sudo yum update -y
+  	sudo yum install -y httpd php php-mysqlnd httpd wget unzip
+	sudo systemctl start httpd
+	sudo systemctl enable httpd
+
+	wget https://wordpress.org/latest.zip
+	unzip latest.zip
+
 	sudo rm -rf /var/www/html/*
-  	sudo mv wordpress/* /var/www/html/
-	sudo chown -R www-data:www-data /var/www/html
+	sudo mv wordpress/* /var/www/html/
+	sudo useradd apache
+
+	sudo chown -R apache:apache /var/www/html
+	sudo chmod -R 755 /var/www/html
+	sudo systemctl restart httpd
+
 }
 
 wordpress
 
 function binary() {
-	sudo apt update
-  	sudo apt install -y tree
-	sudo apt install -y gnupg software-properties-common curl
-	curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
-	sudo tee /etc/apt/sources.list.d/hashicorp.list
-	sudo apt update
-	sudo apt install -y terraform
+
+sudo yum install -y tree
+
+sudo yum install -y yum-utils
+sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
+sudo yum -y install terraform
 }
 
 binary
